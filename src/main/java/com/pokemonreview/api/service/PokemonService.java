@@ -12,4 +12,9 @@ public interface PokemonService {
 
     // get by ID --> "the detail endpoint" (the individual post you click on)
     PokemonDTO getPokemonById(int id);
+
+    // update a pokemon
+    PokemonDTO updatePokemon(PokemonDTO pokemonDTO, int id);
+
+    // next video DELETE -------------
 }

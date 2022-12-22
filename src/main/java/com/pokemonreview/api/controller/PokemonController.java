@@ -37,10 +37,9 @@ public class PokemonController {
     }
 
     @PutMapping("pokemon/{id}/update")
-    public ResponseEntity<Pokemon> updatePokemon(@RequestBody Pokemon pokemon, @PathVariable("id") int pokemonId) {
-        System.out.println(pokemon.getName());
-        System.out.println(pokemon.getType());
-        return ResponseEntity.ok(pokemon);
+    public ResponseEntity<PokemonDTO> updatePokemon(@RequestBody PokemonDTO pokemonDTO, @PathVariable("id") int pokemonId) {
+        PokemonDTO res = pokemonService.updatePokemon(pokemonDTO, pokemonId);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @DeleteMapping("pokemon/{id}/delete")

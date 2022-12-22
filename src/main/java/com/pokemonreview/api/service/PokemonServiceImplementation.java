@@ -46,6 +46,15 @@ public class PokemonServiceImplementation implements PokemonService {
         return mapToDTO(pokemon);
     }
 
+    @Override
+    public PokemonDTO updatePokemon(PokemonDTO pokemonDTO, int id) {
+        Pokemon pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("COULD NOT BE UPDATED"));
+        pokemon.setName(pokemonDTO.getName());
+        pokemon.setType(pokemonDTO.getType());
+        Pokemon updatedPokemon = pokemonRepository.save(pokemon);
+        return mapToDTO(updatedPokemon);
+    }
+
     // create our own mapper because in real world / enterprise prod env, mapping utilities aren't really used.
     // notice this one returns a DTO
     private PokemonDTO mapToDTO(Pokemon pokemon) {
