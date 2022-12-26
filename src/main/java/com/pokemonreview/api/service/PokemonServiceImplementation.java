@@ -4,6 +4,9 @@ import com.pokemonreview.api.exception.PokemonNotFoundException;
 import com.pokemonreview.api.model.Pokemon;
 import com.pokemonreview.api.repository.PokemonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,11 +36,12 @@ public class PokemonServiceImplementation implements PokemonService {
     }
 
     @Override
-    public List<PokemonDTO> getAllPokemons() {
-        // Pokemon pokemon33 = pokemonRepository.findById(74664).orElseThrow(() -> new PokemonNotFoundException("IMPORTANT MSG")); --> Just for testing
-        List<Pokemon> pokemons = pokemonRepository.findAll();
+    public List<PokemonDTO> getAllPokemons(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Pokemon> pokemons = pokemonRepository.findAll(pageable);
+        List<Pokemon> listOfPokemons = pokemons.getContent();
         // we use map because it returns a new List.
-        return pokemons.stream().map(pokemon -> mapToDTO(pokemon)).collect(Collectors.toList());
+        return listOfPokemons.stream().map(pokemon -> mapToDTO(pokemon)).collect(Collectors.toList());
     }
 
     @Override
@@ -55,8 +59,12 @@ public class PokemonServiceImplementation implements PokemonService {
         return mapToDTO(updatedPokemon);
     }
 
-    // create our own mapper because in real world / enterprise prod env, mapping utilities aren't really used.
-    // notice this one returns a DTO
+    @Override
+    public void deletePokemon(int id) {
+        Pokemon pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("CANT DELETE"));
+        pokemonRepository.delete(pokemon);
+    }
+
     private PokemonDTO mapToDTO(Pokemon pokemon) {
         PokemonDTO pokemonDTO = new PokemonDTO();
         pokemonDTO.setId(pokemon.getId());
@@ -71,8 +79,6 @@ public class PokemonServiceImplementation implements PokemonService {
         pokemon.setType(pokemonDTO.getType());
         return pokemon;
     }
-
-    // 1:50 of Exception Handling--------------------
 
 
 }

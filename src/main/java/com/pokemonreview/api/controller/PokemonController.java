@@ -21,8 +21,11 @@ public class PokemonController {
     }
 
     @GetMapping("pokemon")
-    public ResponseEntity<List<PokemonDTO>> getPokemon() {
-        return new ResponseEntity<>(pokemonService.getAllPokemons(), HttpStatus.OK);
+    public ResponseEntity<List<PokemonDTO>> getPokemon(
+            @RequestParam(value ="pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize
+    ) {
+        return new ResponseEntity<>(pokemonService.getAllPokemons(pageNo, pageSize), HttpStatus.OK);
     }
 
     @GetMapping("pokemon/{id}")
@@ -44,7 +47,7 @@ public class PokemonController {
 
     @DeleteMapping("pokemon/{id}/delete")
     public ResponseEntity<String> deletePokemon(@PathVariable("id") int pokemonId) {
-        System.out.println(pokemonId);
-        return ResponseEntity.ok("nuked!");
+        pokemonService.deletePokemon(pokemonId);
+        return new ResponseEntity<>("Nuked", HttpStatus.OK);
     }
 }
